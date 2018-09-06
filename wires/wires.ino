@@ -18,7 +18,20 @@ int prev_state;
 #define MSG_SOLVED "SOLVED"
 #define MSG_PING "PING"
 
+#define EMPTY 0
+#define YELLOW 1
+#define GREEN 2
+#define WHITE 3
+#define BLACK 4
+#define RED 5
+
+#define NUM_SWITCHES 5
+
 #define DATA_DELIMITER " "
+
+#define BASE_PLUS_PIN 10
+#define BASE_MINUS_PIN 0
+#define BASE_SCREW_PIN 5
 
 String MODULE_ID =  "Test_Module";
 
@@ -27,6 +40,9 @@ String msg;
 String data;
 
 int cur_time = 0;
+
+int color_plus [NUM_SWITCHES];
+int color_minus [NUM_SWITCHES];
 
 
 void setup()
@@ -69,7 +85,7 @@ void loop()
         process_data(data);
       }
       else if(msg=="PING"){
-        send_msg(MSG_ACK,"");
+        send_msg(MSG_PING,"");
       }
   }
   
@@ -193,12 +209,10 @@ void boot_on_enter() {
 }
 
 void init_on_enter() {
-  Serial.println("ENTER INIT");
 }
 
 void ready_on_enter () {
   send_msg(MSG_READY,"");
-  Serial.println("ENTER READY");
 }
 
 void start_on_enter() {
