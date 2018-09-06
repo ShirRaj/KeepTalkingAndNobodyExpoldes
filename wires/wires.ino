@@ -16,7 +16,7 @@ int prev_state;
 #define MSG_TRIGGER "TRIGGER"
 #define MSG_PENALTY "PENALTY"
 #define MSG_SOLVED "SOLVED"
-#define MSG_PING "PONG"
+#define MSG_PING "PING"
 
 #define DATA_DELIMITER " "
 
@@ -193,12 +193,10 @@ void boot_on_enter() {
 }
 
 void init_on_enter() {
-  Serial.println("ENTER INIT");
 }
 
 void ready_on_enter () {
   send_msg(MSG_READY,"");
-  Serial.println("ENTER READY");
 }
 
 void start_on_enter() {
