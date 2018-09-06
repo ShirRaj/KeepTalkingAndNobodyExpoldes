@@ -1,0 +1,26 @@
+Rpi chooses modules, locations and parameters for wires.
+space seperated values
+
+FSM library - https://github.com/jonblack/arduino-fsm
+
+BOOT SEQUENCE
+
+BOOT - Sent from module. Parameter - module ID
+DATA - Sent from Rpi to module. Parameters - free according to specific logic per module.
+READY - Sent from module after all parameters are set correctly.
+UNREADY - Sent from module. When module READY fails.
+START - Sent from Rpi to start.
+ACK - Response for START. 
+
+PERIODIC
+
+TIME - Sent from rpi each ten seconds; Parameter - time in 10s resolution.
+
+SOLUTION
+
+BOOM - Sent from module if boom is initiated.
+PENALTY - Sent from module if penalty is assessed. Rpi decides penalty time.
+SOLVED - Sent from module after it is solved correctly. No parameter
+
+GENERAL 
+PING - Sent from Rpi/module. No parameter
