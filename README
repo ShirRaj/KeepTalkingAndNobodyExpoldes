@@ -1,8 +1,6 @@
 Rpi chooses modules, locations and parameters for wires.
 space seperated values
 
-FSM library - https://github.com/jonblack/arduino-fsm
-
 BOOT SEQUENCE
 
 BOOT - Sent from module. Parameter - module ID
