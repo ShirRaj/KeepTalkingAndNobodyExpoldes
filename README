@@ -18,7 +18,8 @@ TIME - Sent from rpi each ten seconds; Parameter - time in 10s resolution.
 
 SOLUTION
 
-BOOM - Sent from module if boom is initiated.
+BOOM - sent from rpi if bomb exploded.
+TRIGGER - Sent from module if triggered.
 PENALTY - Sent from module if penalty is assessed. Rpi decides penalty time.
 SOLVED - Sent from module after it is solved correctly. No parameter
 
