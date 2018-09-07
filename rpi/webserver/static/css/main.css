@@ -3,9 +3,31 @@ html{
 }
 
 body{
-    padding: 1rem;
+    /*padding: 1rem;*/
+    background-color: #e8eaf6;
 }
 
-h1{
-    text-align: center;
+
+.header{
+    padding: 0.5em;
+    color: white;
+    background-color: #283593;
+}
+
+hr.style {
+    border: 0;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+content{
+    padding: 1em;
+    margin: 1em;
+}
+
+.btn{
+    border-radius: 0;
 }

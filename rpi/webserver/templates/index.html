@@ -4,14 +4,52 @@
     <meta charset="UTF-8">
     <title>Just keep talking</title>
 
+    <meta http-equiv="refresh" content="2">
+
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/wires.css">
 
     <script src="/static/js/jquery-3.3.1.min.js"></script>
     <script src="/static/js/bootstrap.js"></script>
 
 </head>
 <body>
-<h1>Just Keep Talking</h1>
+<div class="text-center header">
+    <h1>Just Keep Talking</h1>
+    <h5>(And nobody explodes)</h5>
+</div>
+
+<hr class="style">
+
+<content>
+    <div class="text-center">
+        {% if ready %}
+            <a href="/start" class="btn btn-success btn-lg">Start</a>
+        {% endif %}
+
+        {% if started %}
+            <a href="/reset" class="btn btn-success btn-lg">Reset</a>
+        {% endif %}
+    </div>
+
+    <div class="text-center">
+        <h3>Modules Information</h3>
+        <h4>Please connect the following modules:</h4>
+        Module 1
+        <br>
+        Module 2
+        <br>
+        Module 3
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-5">
+            {% include "wires.html" %}
+        </div>
+    </div>
+</content>
+
+
 </body>
 </html>

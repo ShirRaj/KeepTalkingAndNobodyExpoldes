@@ -1,0 +1,28 @@
+.cell{
+    height: 5vh;
+    min-width: 8vw;
+}
+
+label.comment{
+    font-size: 0.7em;
+}
+
+.red{
+    background-color: red;
+}
+
+.yellow{
+    background-color: yellow;
+}
+
+.green{
+    background-color: green;
+}
+
+.black{
+    background-color: black;
+}
+
+.white{
+    background-color: white;
+}
