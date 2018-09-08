@@ -134,8 +134,12 @@ void loop()
   switch (cur_state) {
 
     case STATE_BOOT:
-      if (enter_state)
+      if(enter_state)
         boot_on_enter();
+      send_msg(MSG_BOOT,MODULE_ID);
+      if(msg=="INIT"){
+        cur_state = STATE_INIT;
+      }
       break;
 
     case STATE_INIT:
@@ -631,8 +635,7 @@ int read_pin(int pin) {
 //FSM functions
 
 void boot_on_enter() {
-  send_msg(MSG_BOOT, MODULE_ID);
-  cur_state = STATE_INIT;
+
 }
 
 void init_on_enter() {
