@@ -3,16 +3,18 @@ import threading
 import serial
 import time
 
-from Manager import Manager
+import Const
+from Modules import ModuleWires, ModuleBigRedButton, ModuleGeneric
 
 
 class ModuleWrapper:
-    def __init__(self, port):
+    def __init__(self, port, bomb):
         self.should_run = False
         self.module = None
         self.module_id = None
         self.lister_thread = None
         self.port_opener_thread = None
+        self.bomb = bomb
         self.ser = serial.Serial(
             port=port,
             baudrate=9600,
@@ -33,11 +35,11 @@ class ModuleWrapper:
 
     def run_listener(self):
         self.lister_thread = threading.Thread(target=self.__listen)
-        self.lister_thread.run()
+        self.lister_thread.start()
 
     def run_port_opener(self):
         self.port_opener_thread = threading.Thread(target=self.__keep_port_open)
-        self.port_opener_thread.run()
+        self.port_opener_thread.start()
 
     def __listen(self):
         while self.should_run:
@@ -49,13 +51,15 @@ class ModuleWrapper:
                         m_id = input_data.split(' ')[1]
                         self.module_id = m_id
                         thread = threading.Thread(target=self.__do_boot)
-                        thread.run()
+                        thread.start()
                     else:
                         if self.module is None:
                             print "expected BOOT!"
                         else:
-                            thread = threading.Thread(target=self.module.actions[action])
-                            thread.run()
+                            if action not in Const.VALID_MODULE_ACTIONS:
+                                continue
+                            thread = threading.Thread(target=self.module.requested_action[action])
+                            thread.start()
 
     def __keep_port_open(self):
         while self.should_run:
@@ -73,5 +77,15 @@ class ModuleWrapper:
             print e
 
     def __do_boot(self):
-        self.module = Manager.get_module(self.module_id, self.ser)
+        self.module = self.__get_module()
+        self.module.init()
         self.module.boot()
+
+    def __get_module(self):
+        if self.module_id == 'wires':
+            m = ModuleWires.ModuleWires(self.module_id, self.ser, self.bomb)
+            return m
+        if self.module_id == 'bigRedButton':
+            m = ModuleBigRedButton.ModuleBigRedButton(self.module_id, self.ser, self.bomb)
+            return m
+        return ModuleGeneric.ModuleGeneric(self.module_id, self.ser, self.bomb)

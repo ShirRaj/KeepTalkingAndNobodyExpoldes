@@ -13,3 +13,4 @@ posible actions:
 2. ALL_SOLVED, no params
 3. SOLVED ID:module_id
 4. WIRES COLORS:c0,c1,...,c5 (ci color acording to Kenneth protocol, by the order from left to right)
+5. READY/UNREADY

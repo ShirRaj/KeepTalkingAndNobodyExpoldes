@@ -1,35 +1,39 @@
 import threading
 import sys
 import glob
+
+import serial
 import zope.event
 import random
 
 import Const
-import IModule
+from Leds import LedIndicator
 import ModuleWrapper
 
 
 class Manager:
     def __init__(self):
-        self.ports = []
+        self.lives = Const.STARTING_LIVES
+        self.bomb_type = Const.BOMB_NUM_TO_NAME[random.randint(0, 3)]
         self.module_wrappers = []
         self.modules_order = []
-        self.lives = Const.STARTING_LIVES
         self.is_started = False
+        self.stop_timers = False
         self.solved_counter = 0
         self.sec_counter = 0
-        self.stop_timers = False
-        self.scan_ports()
-        self.init_module_wrappers()
+        self.init_connection()
+        self.leds = LedIndicator([4, 17, 27, 3])
         zope.event.subscribers.append(self.decrease_live)
+        zope.event.subscribers.append(self.decrease_time)
 
     def set_modules_and_order(self):
-        comb = random.randint(len(Const.ALL_MODULES_OPTIONS))
-        self.module_wrappers = Const.ALL_MODULES_OPTIONS[comb]
+        comb = random.randint(0, len(Const.ALL_MODULES_OPTIONS)-1)
+        self.modules_order = Const.ALL_MODULES_OPTIONS[comb]
 
     def restart_manager(self):
         self.stop_manager()
         self.__init__()
+        self.leds.restart()
 
     def stop_manager(self):
         for wrapper in self.module_wrappers:
@@ -40,33 +44,52 @@ class Manager:
     def start_game(self):
         self.is_started = True
         self.run_timer()
-        # start main loop
-        pass
 
     def stop_game(self):
         self.is_started = False
         self.stop_timers = True
-        # stop main loop
-        pass
+
+    def init_connection(self):
+        ports = self.scan_ports()
+        self.init_module_wrappers(ports)
 
     def scan_ports(self):
         if sys.platform.startswith('win'):
-            self.ports = ['COM%s' % (i + 1) for i in range(256)]
-        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-            self.ports = glob.glob('/dev/tty[A-Za-z]*')
+            r = ['COM%s' % (i + 1) for i in range(256)]
+            l = []
+            for i in r:
+                try:
+                    s = serial.Serial(i)
+                    s.close()
+                    l.append(i)
+                except:
+                    continue
+            return l
 
-    def init_module_wrappers(self):
-        for port in self.ports:
-            module_wrapper = ModuleWrapper.ModuleWrapper(port)
+        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+            return glob.glob('/dev/tty[A-Za-z]*')
+
+    def init_module_wrappers(self, ports):
+        for port in ports:
+            module_wrapper = ModuleWrapper.ModuleWrapper(port, self.bomb_type)
             module_wrapper.start()
             self.module_wrappers.append(module_wrapper)
 
-    def update_solved(self):
+    def update_solved(self, event):
+        if not event.startswith(Const.SOLVED_EVENT_KEY):
+            return
         self.solved_counter += 1
-        if self.solved_counter == 3:
+        module_solved = event.split(':')[1]
+        location = self.modules_order.index(Const.MODULES_ID_TO_NUM[module_solved])
+        self.leds.module_solved(location)
+        m = self.__get_module__(Const.MODULES_NUM_TO_ID[1])
+        if self.solved_counter == Const.MODULE_COUNT:
             self.stop_game()
             self.stop_timers = True
             # alert host
+        elif m is not None and self.solved_counter == Const.MODULE_COUNT-1:
+            m.data()
+
         # alert host
 
     def run_timer(self):
@@ -86,6 +109,7 @@ class Manager:
     def send_time_clock(self):
         self.sec_counter += 1
         time_left = Const.GAME_TIME_SEC - self.sec_counter
+        self.leds.update()
         # send to clock
         if self.sec_counter >= Const.GAME_TIME_SEC:
             self.alert_boom()
@@ -99,7 +123,8 @@ class Manager:
         for mw in self.module_wrappers:
             mw.module.boom()
         # send to host
-            self.stop_timers = True
+        self.leds.boom()
+        self.stop_timers = True
 
     def decrease_live(self, event):
         if event == Const.DECREASE_LIVE_EVENT_KEY:
@@ -107,8 +132,12 @@ class Manager:
             if self.lives < 0:
                 self.alert_boom()
 
-    @staticmethod
-    def get_module(m_id, ser):
-        if m_id == '':
-            m = IModule.IModule(ser)
-            return m
+    def decrease_time(self, event):
+        if event == Const.DECREASE_TIME_EVENT_KEY:
+            self.sec_counter += random.randint(20, 40)
+
+    def __get_module__(self, module_id):
+        for mw in self.module_wrappers:
+            if mw.module.module_id == module_id:
+                return mw.module
+        return None

@@ -1,7 +1,16 @@
 STARTING_LIVES = 10
 GAME_TIME_SEC = 60
+MODULE_COUNT = 1
 DECREASE_LIVE_EVENT_KEY = "DECREASE_LIVE"
-MODULES_NUM_TO_ID = {0: '', 1: '', 2: '', 3: '', 4: '', 5: ''}
+DECREASE_TIME_EVENT_KEY = "DECREASE_TIME"
+SOLVED_EVENT_KEY = "SOLVED"
+MODULES_NUM_TO_ID = {0: 'wires', 1: 'bigRedButton', 2: 'Joystick_Puzzle', 3: 'Morse', 4: '16POINTS', 5: '3_Blinking_Button'}
+MODULES_ID_TO_NUM = {'wires': 0, 'bigRedButton': 1, 'Joystick_Puzzle': 2, 'Morse': 3, '16POINTS': 4, '3_Blinking_Button': 5}
+BOMB_NUM_TO_NAME = {0: 'C-4', 1: 'TNT', 2: 'Semtex', 3: 'Dynamite'}
+VALID_MODULE_ACTIONS = ['BOOT', 'READY', 'UNREADY', 'ACK', 'PENALTY', 'TRIGGER', 'SOLVED', 'PING']
+
+ALL_MODULES_OPTIONS = [(3)]
+"""
 ALL_MODULES_OPTIONS = [(0, 1, 2),
                        (0, 1, 3),
                        (0, 1, 4),
@@ -121,4 +130,4 @@ ALL_MODULES_OPTIONS = [(0, 1, 2),
                        (5, 4, 0),
                        (5, 4, 1),
                        (5, 4, 2),
-                       (5, 4, 3)]
+                       (5, 4, 3)] """

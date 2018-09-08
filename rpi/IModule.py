@@ -1,15 +1,16 @@
 import Actions
-import Manager
+import Const
 import zope.event
 
 
 class IModule(object):
-    def __init__(self, ser):
+    def __init__(self, m_id, ser, bomb):
         self.is_ready = None
         self.is_ack = None
-        self.module_id = None
+        self.module_id = m_id
         self.is_solved = None
         self.ser = ser
+        self.bomb = bomb
         self.dynamic_data = {}
         self.requested_action = {}
         self.set_actions()
@@ -27,28 +28,35 @@ class IModule(object):
     def boot(self):
         self.data()
 
+    def init(self):
+        self.send_msg_to_arduino("INIT")
+
     def set_ready(self):
         self.is_ready = True
+        zope.event.notify("HOST READY MODULE_ID:" + self.module_id)
 
     def set_unready(self):
         self.is_ready = False
+        zope.event.notify("HOST UNREADY MODULE_ID:" + self.module_id)
 
     def ack(self):
         self.is_ack = True
 
     def solve(self):
         self.is_solved = True
+        zope.event.notify(Const.SOLVED_EVENT_KEY + ":" + self.module_id)
 
     @staticmethod
     def decrease_live():
-        zope.event.notify("DECREASE_LIVE")
+        zope.event.notify(Const.DECREASE_LIVE_EVENT_KEY)
 
     @staticmethod
     def ping():
         return "pong"
 
-    def penalty(self):
-        raise NotImplemented()
+    @staticmethod
+    def penalty():
+        zope.event.notify(Const.DECREASE_TIME_EVENT_KEY)
 
     def data(self):
         raise NotImplemented()
