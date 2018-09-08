@@ -1,0 +1,15 @@
+Events protocol:
+
+MUST start with "HOST"
+
+format: "HOST ACTION KEY:VAL,KEY:VAL...."
+*no limit on KEY:VAL
+**KEY:VAL optional
+* + ** depends on ACTION
+
+posible actions:
+
+1. BOOM, no params
+2. ALL_SOLVED, no params
+3. SOLVED ID:module_id
+4. WIRES COLORS:c0,c1,...,c5 (ci color acording to Kenneth protocol, by the order from left to right)

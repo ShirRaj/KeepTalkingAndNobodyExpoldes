@@ -1,0 +1,5 @@
+START = "START"
+DATA = "DATA"
+TIME = "TIME"
+BOOM = "BOOM"
+PING = "PING"
