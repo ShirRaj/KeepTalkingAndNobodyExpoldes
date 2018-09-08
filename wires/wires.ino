@@ -29,8 +29,8 @@ int prev_state;
 
 #define DATA_DELIMITER " "
 
-#define BASE_PLUS_PIN 6
-#define BASE_MINUS_PIN 7
+#define BASE_PLUS_PIN 15
+#define BASE_MINUS_PIN 14
 #define BASE_SCREW_PIN A0
 
 #define SEL_BASE_PIN 6
@@ -48,8 +48,6 @@ int prev_state;
 #define STATE_DYNAMITE_FIVE_THREE_SAME 9
 #define STATE_DYNAMITE_FIVE_TWO_RED 10
 #define STATE_DYNAMITE_FIVE_TWO_GREEN 11
-
-
 #define INSIDE_DATA_DELIMITER ":"
 #define COLOR_ROW_DATA "ROW_DATA"
 #define STATE_DATA "SETUP_STATE"
@@ -223,7 +221,7 @@ void process_logic() {
         Serial.println("WIRE " + String(correct_wires[i]) + " IS STILL CONNECTED");
         right_wires = 0;
       }
-      wire_states[correct_wires[i]] = 0;
+      wire_states[correct_wires[i]] = 1;
     }
   }
   for (int i = 0; i < NUM_SWITCHES; i++) {
@@ -235,8 +233,8 @@ void process_logic() {
   int plus_switch_state [NUM_SWITCHES];
   int minus_switch_state [NUM_SWITCHES];
   for (int i = 0; i < NUM_SWITCHES; i++) {
-    plus_switch_state[i] = (read_pin(BASE_PLUS_PIN + 2 * i) == LOW);
-    minus_switch_state[i] = (read_pin(BASE_MINUS_PIN + 2 * i) == LOW);
+    plus_switch_state[i] = (read_pin(BASE_PLUS_PIN - 2 * i) == LOW);
+    minus_switch_state[i] = (read_pin(BASE_MINUS_PIN - 2 * i) == LOW);
     //    Serial.println("PIN " + String(i) + " PLUS " + String(plus_switch_state[i]) + " MINUS " + String(minus_switch_state[i]));
   }
 
@@ -274,9 +272,9 @@ boolean check_trigger() {
   //check if user triggered bomb
   if ((wrong_switches || wrong_wires)) {
     if (cur_trigger == 0) {
+      cur_trigger = 1;
       return true;
     }
-    cur_trigger = 1;
   }
   else
     cur_trigger = 0;
@@ -288,10 +286,9 @@ boolean check_penalty() {
   
   if (right_wires == 1 && right_switches == 0) {
     if(cur_penalty == 0) {
+      cur_penalty = 1;
       return true;
     }
-    cur_penalty = 1;
-
   }
   else
     cur_penalty = 0;
@@ -350,6 +347,7 @@ void process_data(String data) {
           color_row[i] = BLACK;
           break;
         case 'E':
+          Serial.println("Getting them empty at " + String(i));
           color_row[i] = EMPTY;
           break;
       }
@@ -463,7 +461,7 @@ void process_data(String data) {
 
           if (color_row[i] == GREEN) {
             correct_plus_switches[green_counter] = i;
-            red_counter = green_counter + 1;
+            green_counter = green_counter + 1;
           }
           correct_wires[counter] = i;
           counter = counter + 1;
@@ -600,19 +598,19 @@ boolean check_if_ready() {
   for (int i = 0; i < NUM_SWITCHES; i++) {
     if (color_row[i] != EMPTY) {
       if (digitalRead(BASE_SCREW_PIN + i) == HIGH) {
-        Serial.println("SCREW " + String(i) + " not ready");
+        Serial.println("SCREW " + String(i) + " not ready SHOULD BE LOW");
         return false;
       }
     }
     else {
       if (digitalRead(BASE_SCREW_PIN + i) == LOW) {
-        Serial.println("SCREW " + String(i) + " not ready");
+        Serial.println("SCREW " + String(i) + " not ready SHOULD BE HIGH");
         return false;
       }
     }
   }
   for (int i = 0; i < NUM_SWITCHES; i++) {
-    if (read_pin(BASE_MINUS_PIN + 2 * i) == HIGH || read_pin(BASE_PLUS_PIN + 2 * i) == HIGH) {
+    if (read_pin(BASE_MINUS_PIN - 2 * i) == HIGH || read_pin(BASE_PLUS_PIN - 2 * i) == HIGH) {
       Serial.println("PLUS or MINUS SWITCH " + String(i) + " not ready");
       return false;
     }
