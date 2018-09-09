@@ -1,6 +1,8 @@
 Rpi chooses modules, locations and parameters for wires.
 space seperated values
 
+Link to the manual -https://docs.google.com/document/d/1h8VP7N_FWcMYxiyH7pzzA1065ZJ98JLBcauPc3oHvbI/edit?usp=sharing
+
 BOOT SEQUENCE
 
 BOOT - Sent from module. Parameter - module ID
@@ -23,3 +25,29 @@ SOLVED - Sent from module after it is solved correctly. No parameter
 
 GENERAL 
 PING - Sent from Rpi/module. No parameter
+
+
+MODULE SPECIFIC PROTOCOL
+
+Big Red Button - 
+Data neeeded - whether all other modules have been solved.
+Format - ALL_SOLVED:STATUS, where STATUS = 0 (not all other modules have been solved), 1 (otherwise).
+
+Wires - 
+Data needed - wire locations (for each wire - color and if present), bomb state (According to defusal manual).
+Format - 
+	Wire locations - ROW_DATA:C1,C2,C3,C4,C5. Where Ci is letter representing color with the following options
+	Y - Yellow
+	R - Red
+	W - White
+	B - Black
+	G - Green
+	E - Empty
+
+	Wire locations need to be sent BEFORE Bomb state
+
+	Bomb state - SETUP_DATA:STATE_ID. ID is by manual in increasing order according to tables. 
+
+
+
+

@@ -78,11 +78,15 @@ void loop()
     case STATE_BOOT:
       if(enter_state)
         boot_on_enter();
+      send_msg(MSG_BOOT,MODULE_ID);
+      if(msg=="INIT"){
+        cur_state = STATE_INIT;
+      }
       break;
 
     case STATE_INIT:
       if(enter_state)
-        init_on_enter();
+        init_on_enter();  
       if(check_if_ready()) {
         cur_state=STATE_READY;
       }
@@ -188,8 +192,6 @@ boolean check_if_ready() {
 
 void boot_on_enter() {
   Serial.println("ENTER BOOT");
-  send_msg(MSG_BOOT,MODULE_ID);
-  cur_state = STATE_INIT;
 }
 
 void init_on_enter() {
