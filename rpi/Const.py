@@ -9,7 +9,7 @@ MODULES_ID_TO_NUM = {'wires': 0, 'bigRedButton': 1, 'Joystick_Puzzle': 2, 'Morse
 BOMB_NUM_TO_NAME = {0: 'C-4', 1: 'TNT', 2: 'Semtex', 3: 'Dynamite'}
 VALID_MODULE_ACTIONS = ['BOOT', 'READY', 'UNREADY', 'ACK', 'PENALTY', 'TRIGGER', 'SOLVED', 'PING']
 
-ALL_MODULES_OPTIONS = [(3)]
+ALL_MODULES_OPTIONS = [(1)]
 """
 ALL_MODULES_OPTIONS = [(0, 1, 2),
                        (0, 1, 3),

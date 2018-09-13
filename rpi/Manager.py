@@ -10,6 +10,10 @@ import Const
 from Leds import LedIndicator
 import ModuleWrapper
 
+TIMER_IP = "10.0.100.52"
+TIMER_PORT = 8888
+MESSAGE_PREFIX = 'T'
+
 
 class Manager:
     def __init__(self):

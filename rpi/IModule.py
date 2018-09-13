@@ -29,7 +29,8 @@ class IModule(object):
         self.data()
 
     def init(self):
-        self.send_msg_to_arduino("INIT")
+        b = "INIT"
+        self.send_msg_to_arduino(b)
 
     def set_ready(self):
         self.is_ready = True
@@ -78,7 +79,9 @@ class IModule(object):
         else:
             msg = action + ' ' + key + ':' + val
         if self.ser.isOpen():
-            self.ser.write(msg)
+            msg_to_send = msg + '\n'
+            print self.ser.write(msg_to_send.encode("ascii"))
+            #self.ser.flush()
         else:
             print "error"
 

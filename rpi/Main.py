@@ -25,6 +25,7 @@ def handle_ready_event(event):
         ready_count -= 1
 
     if ready_count == Const.MODULE_COUNT:
+        print "ready"
         manager.start_game()
 
 

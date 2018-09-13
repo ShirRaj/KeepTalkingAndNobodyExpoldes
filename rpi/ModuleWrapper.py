@@ -1,3 +1,4 @@
+
 import threading
 
 import serial
@@ -46,20 +47,27 @@ class ModuleWrapper:
             if self.ser.isOpen:
                 input_data = self.ser.readline()
                 if input_data is not None or input_data is not '':
-                    action = input_data.split(' ')[0]
-                    if action == 'BOOT':
+                    time.sleep(2)
+                    print("MY %i", ord(b'N'))
+                    self.ser.write([65])
+                    self.ser.flush()
+                    while True:
+                        print self.ser.readline()
+                    """action = input_data.split(' ')[0]
+                    if 'BOOT' in action:
                         m_id = input_data.split(' ')[1]
                         self.module_id = m_id
                         thread = threading.Thread(target=self.__do_boot)
                         thread.start()
                     else:
+                        print "kenneth"
                         if self.module is None:
                             print "expected BOOT!"
                         else:
                             if action not in Const.VALID_MODULE_ACTIONS:
                                 continue
                             thread = threading.Thread(target=self.module.requested_action[action])
-                            thread.start()
+                            thread.start()"""
 
     def __keep_port_open(self):
         while self.should_run:
